@@ -1,0 +1,30 @@
+#!/usr/bin/python
+
+from random import shuffle
+import os
+import sys
+import subprocess
+
+print "\n^D to skip episode, ^C to quit\n"
+
+player = 'mplayer'
+if len(sys.argv) > 1:
+    player = sys.argv[1]
+
+try:
+    episodes = []
+    for dir, subdirs, files in os.walk('.'):
+        episodes.extend([os.path.join(dir, filename) for filename in files])
+    shuffle(episodes)
+    while True:
+        episode = episodes.pop()
+        ext = episode[-4:]
+        if ext == ".avi" or ext == ".mov" or ext == ".mpg" or episode[-3:] == ".rm" or episode[-5:] == ".mpeg" or ext == ".mp4" or ext == ".wmv" or ext == ".asf" or ext == ".flv":
+            try:
+                ans = raw_input(episode + "\n")
+                subprocess.call("%s \""%player + episode + "\"", shell=True)
+            except EOFError:
+                pass
+except KeyboardInterrupt:
+    sys.exit(0)
+

@@ -1,0 +1,39 @@
+#!/bin/sh
+thumbnail >&2
+thumbnail-smaller >&2
+
+echo "<html>"
+echo "<head>"
+echo "<title>$1</title>"
+cat << EOL
+<style>
+    div.items:after {
+        clear: left;
+    }
+    div.item {
+        float: left;
+        text-align: center;
+        margin: 1ex;
+    }
+    div.item a img {
+        border: 0;
+    }
+    p {
+        margin: 0;
+        padding: 0;
+        width: auto;
+    }
+</style>
+EOL
+echo "</head>"
+echo "<body><div class='items'>"
+
+files=$(ls *.JPG *.jpg *.PNG *.png | grep -v -e .small. -e .thumb.)
+for i in $files; do
+         echo "$i" >&2
+         sm=$(echo "$i" | sed 's/^\(.*\)\(....\)$/\1\.small\2/');
+         th=$(echo "$i" | sed 's/^\(.*\)\(....\)$/\1\.thumb\2/');
+         echo "<div class='item'><a href='$sm'><img src='$th' title='$i' /></a><p><a href='$i'>Full size</a></p></div>"
+done
+
+echo "</div><body></html>"
