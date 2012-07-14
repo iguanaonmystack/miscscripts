@@ -14,7 +14,7 @@ if not filenames:
     filenames += glob.glob('*.GIF')
     filenames += glob.glob('*.gif')
     for arg in filenames[:]:
-        if '.small.' in arg or '.thumb.' in arg:
+        if '.small.' in arg or '.thumb.' in arg or '.little.' in arg:
             filenames.remove(arg)
 
 for fn in filenames:

@@ -1,6 +1,8 @@
-#!/bin/sh
+#!/bin/bash
+#autorotate >&2
 thumbnail >&2
 thumbnail-smaller >&2
+little-videos >&2
 
 echo "<html>"
 echo "<head>"
@@ -28,12 +30,30 @@ EOL
 echo "</head>"
 echo "<body><div class='items'>"
 
-files=$(ls *.JPG *.jpg *.PNG *.png | grep -v -e .small. -e .thumb.)
-for i in $files; do
-         echo "$i" >&2
-         sm=$(echo "$i" | sed 's/^\(.*\)\(....\)$/\1\.small\2/');
-         th=$(echo "$i" | sed 's/^\(.*\)\(....\)$/\1\.thumb\2/');
-         echo "<div class='item'><a href='$sm'><img src='$th' title='$i' /></a><p><a href='$i'>Full size</a></p></div>"
+files="$(ls *.* | grep -v -e .small. -e .thumb.)"
+for file in $files; do
+    echo "$file" >&2
+    ext=${file##*\.}
+    ext=$(echo "$ext" | awk '{print tolower($0)}')
+    case "$ext" in
+        jpg | png | gif )
+            if [[ "$file" != *.little* ]]
+            then
+                sm=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1\.small\2/');
+                th=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1\.thumb\2/');
+                echo "<div class='item'><a href='$sm'><img src='$th' title='$file' /></a><p><a href='$file'>Full size</a></p></div>"
+            fi
+        ;;
+        avi )
+            webm=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.webm/')
+            mp4=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.mp4/')
+            th=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.jpg/');
+            echo "<div class='item'><video poster='$th' controls='controls'><source src='$webm' type='video/webm; codecs=\"vp8.0, vorbis\"' /><source src='$mp4' type='video/mp4; codecs=\"avc1.4D401E, mp4a.40.2\"' /><p>You need a modern browser to view video.</p></video><p><a href='$file'>Original video</a></p></div>"
+        ;;
+        * )
+            echo "Unhandled file type" >&2
+        ;;
+    esac
 done
 
 echo "</div><body></html>"
