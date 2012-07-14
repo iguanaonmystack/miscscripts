@@ -1,0 +1,7 @@
+#!/bin/bash
+
+mount $1
+pushd $1
+bash
+popd
+umount $1
