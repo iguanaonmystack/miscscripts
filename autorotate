@@ -16,6 +16,7 @@ if not filenames:
     for arg in filenames[:]:
         if '.small.' in arg or '.thumb.' in arg:
             filenames.remove(arg)
+    filenames.sort()
 
 for fn in filenames:
     print(fn)
