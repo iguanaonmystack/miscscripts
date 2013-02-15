@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import sys
 
+# Simple script to allow me to just copy image links into vim
+# and have this script turn them into actual images.
+
 fmt = '<a href="%s"><img src="%s" /></a>'
 
 for line in sys.stdin:
@@ -11,4 +14,3 @@ for line in sys.stdin:
         elif '.thumb.' in line:
             line = fmt % (line.replace('.thumb.', '.small.'), line)
     print line
-
