@@ -1,7 +1,9 @@
 #!/bin/bash
+#echo "autorotate..." >&2
 #autorotate >&2
+echo "thumbnail..." >&2
 thumbnail >&2
-thumbnail-smaller >&2
+echo "little-videos..." >&2
 little-videos >&2
 
 echo "<html>"
@@ -25,10 +27,47 @@ cat << EOL
         padding: 0;
         width: auto;
     }
+    h2 {
+        clear: both;
+    }
 </style>
+<script src="/lightbox/2.6/js/jquery-1.10.2.min.js"></script>
+<script src="/lightbox/2.6/js/lightbox.js"></script>
+<link href="/lightbox/2.6/css/lightbox.css" rel="stylesheet" />
 EOL
 echo "</head>"
-echo "<body><div class='items'>"
+echo "<body>"
+
+if [ $# -gt 1 ]; then
+  echo "<h2>Best photos</h2>"
+  for file; do
+    echo "$file" >&2
+    ext=${file##*\.}
+    ext=$(echo "$ext" | awk '{print tolower($0)}')
+    case "$ext" in
+        jpg | png | gif )
+            if [[ "$file" != *.little* ]]
+            then
+                sm=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1\.small\2/');
+                th=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1\.thumb\2/');
+                echo "<div class='item'><a href='$sm' data-lightbox='best'><img src='$th' title='$file' /></a><p><a href='$file'>Full size</a></p></div>"
+            fi
+        ;;
+        avi )
+            webm=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.webm/')
+            mp4=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.mp4/')
+            th=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.jpg/');
+            echo "<div class='item'><video poster='$th' controls='controls'><source src='$webm' type='video/webm; codecs=\"vp8.0, vorbis\"' /><source src='$mp4' type='video/mp4; codecs=\"avc1.4D401E, mp4a.40.2\"' /><p>You need a modern browser to view video.</p></video><p><a href='$file'>Original video</a></p></div>"
+        ;;
+        * )
+            echo "Unhandled file type" >&2
+        ;;
+    esac
+  done
+fi
+
+echo "</div><h2>All photos</h2>"
+echo "<div class='items'>"
 
 files="$(ls *.* | grep -v -e .small. -e .thumb.)"
 for file in $files; do
@@ -41,7 +80,7 @@ for file in $files; do
             then
                 sm=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1\.small\2/');
                 th=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1\.thumb\2/');
-                echo "<div class='item'><a href='$sm'><img src='$th' title='$file' /></a><p><a href='$file'>Full size</a></p></div>"
+                echo "<div class='item'><a href='$sm' class='all'><img src='$th' title='$file' /></a><p><a href='$file'>Full size</a></p></div>"
             fi
         ;;
         avi )
@@ -57,3 +96,4 @@ for file in $files; do
 done
 
 echo "</div><body></html>"
+echo "Done" >&2
