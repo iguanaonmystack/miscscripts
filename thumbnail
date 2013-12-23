@@ -23,7 +23,7 @@ for fn in filenames:
     base, extn = os.path.splitext(fn)
     fn2 = base + os.extsep + 'small' + extn
     if not os.path.exists(fn2):
-        subprocess.call(['convert', fn, '-scale', '800', fn2])
+        subprocess.call(['convert', fn, '-scale', '1024', fn2])
     fn2 = base + os.extsep + 'thumb' + extn
     if not os.path.exists(fn2):
         subprocess.call(['convert', fn, '-scale', '200', fn2])

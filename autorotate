@@ -20,9 +20,5 @@ if not filenames:
 
 for fn in filenames:
     print(fn)
-    base, extn = os.path.splitext(fn)
-    fn2 = base + os.extsep + 'rotated' + extn
-    if not os.path.exists(fn2):
-        subprocess.call(['convert', fn, '-auto-orient', fn2])
-        os.rename(fn2, fn)
-
+    subprocess.call(['exiftran', '-a', '-i', fn])
+    

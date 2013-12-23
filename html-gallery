@@ -11,21 +11,29 @@ echo "<head>"
 echo "<title>$1</title>"
 cat << EOL
 <style>
+    body {
+        font-family: sans-serif;
+        background-color: gray;
+    }
     div.items:after {
         clear: left;
     }
     div.item {
         float: left;
         text-align: center;
-        margin: 1ex;
+        margin: 5px;
+        width: 220px;
+        height: 220px;
     }
     div.item a img {
-        border: 0;
+        border: 2px solid black;
+        max-height: 200px;
     }
     p {
         margin: 0;
         padding: 0;
         width: auto;
+        font-size: 16px;
     }
     h2 {
         clear: both;
@@ -80,7 +88,7 @@ for file in $files; do
             then
                 sm=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1\.small\2/');
                 th=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1\.thumb\2/');
-                echo "<div class='item'><a href='$sm' class='all'><img src='$th' title='$file' /></a><p><a href='$file'>Full size</a></p></div>"
+                echo "<div class='item'><a href='$sm' class='all' data-lightbox='all'><img src='$th' title='$file' /></a><p><a href='$file'>Full size</a></p></div>"
             fi
         ;;
         avi )
