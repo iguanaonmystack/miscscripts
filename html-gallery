@@ -11,9 +11,13 @@ echo "<head>"
 echo "<title>$1</title>"
 cat << EOL
 <style>
+    html {
+        min-height: 100%;
+    }
     body {
         font-family: sans-serif;
         background-color: gray;
+        min-height: 100%;
     }
     div.items:after {
         clear: left;
@@ -77,7 +81,7 @@ fi
 echo "</div><h2>All photos</h2>"
 echo "<div class='items'>"
 
-files="$(ls *.* | grep -v -e .small. -e .thumb.)"
+files="$(ls *.* | grep -v -e .small. -e .thumb. -e .lj.)"
 for file in $files; do
     echo "$file" >&2
     ext=${file##*\.}
