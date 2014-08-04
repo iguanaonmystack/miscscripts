@@ -76,9 +76,10 @@ if [ $# -gt 1 ]; then
         ;;
     esac
   done
+  echo "</div>"
 fi
 
-echo "</div><h2>All photos</h2>"
+echo "<h2>All photos</h2>"
 echo "<div class='items'>"
 
 files="$(ls *.* | grep -v -e .small. -e .thumb. -e .lj.)"
