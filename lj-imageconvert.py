@@ -10,6 +10,7 @@ for line in sys.stdin:
             if '.small.' in filepath:
                 newpath = filepath.replace('.small.', '.lj.')
             elif '.thumb.' in filepath:
+                filepath = filepath.replace('.thumb.', '.small.')
                 newpath = filepath.replace('.thumb.', '.lj.')
             elif '.lj.' in filepath:
                 newpath = filepath

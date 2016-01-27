@@ -19,7 +19,7 @@ try:
     while True:
         episode = episodes.pop()
         ext = episode[-4:]
-        if ext == ".avi" or ext == ".mov" or ext == ".mpg" or episode[-3:] == ".rm" or episode[-5:] == ".mpeg" or ext == ".mp4" or ext == ".wmv" or ext == ".asf" or ext == ".flv":
+        if ext == ".avi" or ext == ".mov" or ext == ".mpg" or episode[-3:] == ".rm" or episode[-5:] == ".mpeg" or ext == ".mp4" or ext == ".wmv" or ext == ".asf" or ext == ".flv" or ext == 'webm':
             try:
                 ans = raw_input(episode + "\n")
                 subprocess.call("%s \""%player + episode + "\"", shell=True)
