@@ -1,0 +1,3 @@
+#!/bin/sh
+
+wine /home/flexo/.wine/drive_c/Program\ Files\ \(x86\)/DigiGuide\ TV\ Guide/DigiGuide.exe
