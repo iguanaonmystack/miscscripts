@@ -33,6 +33,11 @@ cat << EOL
         border: 2px solid black;
         max-height: 200px;
     }
+    div.video {
+        clear: both;
+        text-align: center;
+        padding: 1em;
+    }
     p {
         margin: 0;
         padding: 0;
@@ -66,9 +71,9 @@ if [ $# -gt 1 ]; then
             fi
         ;;
         avi )
-            webm=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.webm/')
-            mp4=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.mp4/')
-            th=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.jpg/');
+            webm="$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.webm/')"
+            mp4="$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.mp4/')"
+            th="$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.jpg/')"
             echo "<div class='item'><video poster='$th' controls='controls'><source src='$webm' type='video/webm; codecs=\"vp8.0, vorbis\"' /><source src='$mp4' type='video/mp4; codecs=\"avc1.4D401E, mp4a.40.2\"' /><p>You need a modern browser to view video.</p></video><p><a href='$file'>Original video</a></p></div>"
         ;;
         * )
@@ -83,7 +88,7 @@ echo "<h2>All photos</h2>"
 echo "<div class='items'>"
 
 files="$(ls *.* | grep -v -e .small. -e .thumb. -e .lj.)"
-for file in $files; do
+find . -not -name \*.little.\* -not -name \*.thumb.\* -not -name \*.small.\* -type f | while read file; do
     echo "$file" >&2
     ext=${file##*\.}
     ext=$(echo "$ext" | awk '{print tolower($0)}')
@@ -96,11 +101,11 @@ for file in $files; do
                 echo "<div class='item'><a href='$sm' class='all' data-lightbox='all'><img src='$th' title='$file' /></a><p><a href='$file'>Full size</a></p></div>"
             fi
         ;;
-        avi )
+        avi | mov )
             webm=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.webm/')
             mp4=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.mp4/')
             th=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.jpg/');
-            echo "<div class='item'><video poster='$th' controls='controls'><source src='$webm' type='video/webm; codecs=\"vp8.0, vorbis\"' /><source src='$mp4' type='video/mp4; codecs=\"avc1.4D401E, mp4a.40.2\"' /><p>You need a modern browser to view video.</p></video><p><a href='$file'>Original video</a></p></div>"
+            echo "<div class='video'><video poster='$th' controls='controls'><source src='$webm' type='video/webm; codecs=\"vp8.0, vorbis\"' /><source src='$mp4' type='video/mp4; codecs=\"avc1.4D401E, mp4a.40.2\"' /><p>You need a modern browser to view video.</p></video><p><a href='$file'>Original video</a></p></div>"
         ;;
         * )
             echo "Unhandled file type" >&2

@@ -24,12 +24,15 @@ targets = {
     #      -acodec libvorbis -ac 2 -ab 96k -ar 44100 \
     #        -b 345k -s 640x360 output.ogv
     os.extsep + 'webm':
-        "ffmpeg -i {input} -acodec libvorbis -ac 2 -ab 96k -ar 44100 -b 345k -s 480x360 {output}",
-    os.extsep + 'mp4':
-        "ffmpeg -i {input} -acodec libfaac -ab 128k -ac 2 -vcodec libx264 -crf 22 -threads 0 -s 480x360 {output}",
+    "ffmpeg -i {input} -c:v libvpx -b:v 1M -c:a libvorbis -s 480x360 {output}",
+    #os.extsep + 'mp4':
+    #    "ffmpeg -i {input} -acodec libfaac -ab 128k -ac 2 -vcodec libx264 -crf 22 -threads 0 -s 480x360 {output}",
     os.extsep + 'jpg':
         "ffmpeg -itsoffset -4 -i {input} -vframes 1 -an -f mjpeg -s 480x360 {output}",
 }
+
+def escape(s):
+    return "'%s'" % (s.replace("'", "'\"'\"'"))
 
 for fn in filenames:
     print(fn)
@@ -37,8 +40,8 @@ for fn in filenames:
     for target in targets:
         fn2 = base + os.extsep + 'little' + target
         if not os.path.exists(fn2):
-            print ">>>", targets[target].format(input=fn, output=fn2)
+            print ">>>", targets[target].format(input=escape(fn), output=escape(fn2))
             subprocess.call(
-                targets[target].format(input=fn, output=fn2),
+                targets[target].format(input=escape(fn), output=escape(fn2)),
                 shell=True)
 
