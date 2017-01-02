@@ -19,12 +19,18 @@ try:
     while True:
         episode = episodes.pop()
         ext = episode[-4:]
-        if ext == ".avi" or ext == ".mov" or ext == ".mpg" or episode[-3:] == ".rm" or episode[-5:] == ".mpeg" or ext == ".mp4" or ext == ".wmv" or ext == ".asf" or ext == ".flv" or ext == 'webm':
+        if ext == ".avi" or ext == ".mov" or ext == ".mpg" or episode[-3:] == ".rm" or episode[-5:] == ".mpeg" or ext == ".mp4" or ext == ".wmv" or ext == ".asf" or ext == ".flv" or episode[-5:] == '.webm' or ext == '.gif':
             try:
                 ans = raw_input(episode + "\n")
                 subprocess.call("%s \""%player + episode + "\"", shell=True)
             except EOFError:
-                pass
+                continue
+            delete = raw_input('Delete? (y/N/Replay) ')
+            if delete:
+                if delete in 'Yy':
+                    os.unlink(episode)
+                if delete in 'Rr':
+                    episodes.append(episode)
 except KeyboardInterrupt:
     sys.exit(0)
 
