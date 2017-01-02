@@ -1,0 +1,23 @@
+#!/bin/sh
+# This script is triggered by udev, with /etc/udev/rules.d/keepassx-usb-key.rules
+# containing the following:
+# ACTION=="add", SUBSYSTEM=="block", ENV{ID_VENDOR_ID}=="0930", ENV{ID_MODEL_ID}=="6545", RUN+="/home/flexo/bin/keepassx-usb-key"
+
+#env >> /tmp/test
+#echo >> /tmp/test
+#echo "$DEVTYPE" >> /tmp/test
+#echo "$ID_FS_LABEL" >> /tmp/test
+#echo >> /tmp/test
+
+if [ "$DEVTYPE" = partition ] && [ "$ID_FS_LABEL" = KEYRING ]; then
+    date > /tmp/keepassx-usb-key
+    env >> /tmp/keepassx-usb-key
+    if [ /bin/mount | grep /mnt/usbkey ]; then
+        echo "/mnt/usbkey already mounted" >> /tmp/keepassx-usb-key
+    else
+        /bin/mount "$DEVNAME" /mnt/usbkey
+        /usr/bin/rsync --verbose --stats --recursive /home/flexo/Dropbox/KeePassX /mnt/usbkey/KeePassX >> /tmp/keepassx-usb-key
+        /bin/umount /mnt/usbkey
+        echo "done" >> /tmp/keepassx-usb-key
+    fi
+fi
