@@ -88,7 +88,7 @@ echo "<h2>All photos</h2>"
 echo "<div class='items'>"
 
 files="$(ls *.* | grep -v -e .small. -e .thumb. -e .lj.)"
-find . -not -name \*.little.\* -not -name \*.thumb.\* -not -name \*.small.\* -type f | while read file; do
+find . -not -name \*.little.\* -not -name \*.thumb.\* -not -name \*.small.\* -type f | sort | while read file; do
     echo "$file" >&2
     ext=${file##*\.}
     ext=$(echo "$ext" | awk '{print tolower($0)}')
