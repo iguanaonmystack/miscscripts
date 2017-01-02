@@ -2,6 +2,6 @@
 
 mount $1
 pushd $1
-bash
+bash --init-file <(echo '. "$HOME/.bashrc" ; PS1="'"$1:"'$PS1"')
 popd
 umount $1

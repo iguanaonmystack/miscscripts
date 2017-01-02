@@ -23,4 +23,4 @@ ext_h=`xrandr | sed 's/^'"${EXT}"' [^0-9]* [0-9]\+x\([0-9]\+\).*$/\1/p;d'`
 int_w=`xrandr | sed 's/^'"${INT}"' [^0-9]* \([0-9]\+\)x.*$/\1/p;d'`
 off_w=`python -c "print(int($EXT_SCALE * $ext_w))"`
 
-xrandr --output "${EXT}" --primary --scale 1x1  --output "${INT}" --scale ${EXT_SCALE}x${EXT_SCALE} --right-of $EXT
+xrandr --output "${EXT}" --primary --scale 1x1  --output "${INT}" --off # --scale ${EXT_SCALE}x${EXT_SCALE} --right-of $EXT
