@@ -10,5 +10,5 @@ gsettings set org.gnome.desktop.interface scaling-factor 1
 xmodmap /home/flexo/.Xmodmap.desktop
 
 # WM:
-killall notion || true
+killall --user $USER notion || true
 notion -session docked &

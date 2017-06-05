@@ -11,5 +11,5 @@ xmodmap /home/flexo/.Xmodmap.laptop
 xrandr --output DP-3-2 --off
 
 # WM:
-killall notion || true
+killall --user $USER notion || true
 notion -session undocked &
