@@ -30,7 +30,7 @@ syndaemon -d -i 0.5 -K -R # disable touchpad while typing
 #/usr/bin/xbindkeys -f /home/flexo/.xbindkeysrc.noauto
 
 # Other background programs and mountpoints:
-ps x | grep -q [r]edshift || redshift -l 51.4155:0.0501 -t 6400:4400 &
+ps x | grep -q [r]edshift || redshift -l 51.4155:0.0501 -t 6400:2300 &
 sshfs elzar.nevira.net:notes ~/notes &
 sshfs elzar.nevira.net:misc ~/misc &
 mount /mnt/cloudbox/storage/ &
