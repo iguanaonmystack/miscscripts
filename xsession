@@ -30,7 +30,7 @@ syndaemon -d -i 0.5 -K -R # disable touchpad while typing
 #/usr/bin/xbindkeys -f /home/flexo/.xbindkeysrc.noauto
 
 # Other background programs and mountpoints:
-ps x | grep -q [r]edshift || redshift -l 51.4155:0.0501 -t 6400:2300 &
+redshift -l 51.4155:0.0501 -t 6400:2600 &
 sshfs elzar.nevira.net:notes ~/notes &
 sshfs elzar.nevira.net:misc ~/misc &
 mount /mnt/cloudbox/storage/ &
@@ -43,6 +43,12 @@ xfce4-terminal --role=initial -x mosh elzar.nevira.net &
 echo "started"
 x-www-browser 2> /dev/null &
 
+# Exit tasks
+function finish {
+    killall --user $USER redshift
+}
+trap finish EXIT
+
 # Sentinel
 while true; do
     if ps x | grep -q [n]otion
@@ -52,7 +58,7 @@ while true; do
         continue
     else
         sleep 1
-        if ps aux | grep -q [n]otion
+        if ps x | grep -q [n]otion
         then
             echo 'just running'
             continue
