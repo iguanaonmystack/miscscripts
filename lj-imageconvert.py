@@ -3,8 +3,8 @@ import sys
 
 for line in sys.stdin:
     line = line.strip()
-    if line.startswith('http') and line.lower().endswith('.jpg'):
-        path = line.split('/', 3)
+    if line.startswith('http') and line.split(' ', 1)[0].lower().endswith('.jpg'):
+        path = line.split(' ', 1)[0].split('/', 3)
         if len(path) > 3:
             filepath = path[3]
             if '.small.' in filepath:
