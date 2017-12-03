@@ -3,7 +3,7 @@
 import sys
 from cgi import escape
 
-img_fmt_start = '<figure style="border: 2px solid black; width: 600px;"><a href="%s"><img src="%s" style="display: block;" width="600" /></a>'
+img_fmt_start = '<figure style="border: 2px solid black; width: 600px; margin: 0;"><a href="%s"><img src="%s" style="display: block;" width="600" /></a>'
 caption_fmt = '<figcaption style="text-align: center; border-top: 2px solid black; background-color: #ddd; padding: 0.5ex;">%s</figcaption>'
 img_fmt_end = '</figure>'
 thumb_fmt = '<a href="%s"><img src="%s" style="border: 2px solid black; float: left; margin: 0 1em 1em 0;" /></a>'
