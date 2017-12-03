@@ -1,5 +1,10 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import sys
+try:
+    from shlex import quote
+except ImportError:
+    from pipes import quote
 
 for line in sys.stdin:
     line = line.strip()
@@ -17,5 +22,5 @@ for line in sys.stdin:
                 filepath = filepath.replace('.lj.', '.')
             else:
                 newpath = filepath[:-4] + '.lj' + filepath[-4:]
-            print 'convert', filepath, '-scale 600', newpath
+            print('convert', quote(filepath), '-scale 600', quote(newpath))
 
