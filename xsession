@@ -17,7 +17,7 @@ fi
 sleep 1
 
 # Tray applets:
-/home/flexo/subversion/phwmon/phwmon.py --cpu &
+$HOME/subversion/phwmon/phwmon.py --cpu &
 xfce4-power-manager --restart &
 pasystray &
 nm-applet &
@@ -26,20 +26,25 @@ nm-applet &
 stalonetray -i 32 &
 
 # Settings:
-syndaemon -d -i 0.5 -K -R # disable touchpad while typing
-#/usr/bin/xbindkeys -f /home/flexo/.xbindkeysrc.noauto
+#syndaemon -d -i 0.5 -K -R # disable touchpad while typing
+syndaemon -d -i 0.4 -K -R # disable touchpad while typing
+#/usr/bin/xbindkeys -f $HOME/.xbindkeysrc.noauto
+xrdb $HOME/.Xresources
 
 # Other background programs and mountpoints:
-redshift -l 51.4155:0.0501 -t 6400:2600 &
+#redshift -l 51.4155:0.0501 -t 6400:2600 &
+redshift -l 50.6433:-3.6397 -t 6400:2600 &
 sshfs elzar.nevira.net:notes ~/notes &
 sshfs elzar.nevira.net:misc ~/misc &
 mount /mnt/cloudbox/storage/ &
 mount /mnt/cloudbox/Shared/ &
+dropbox start &
 
 # UIs:
 digiguide &
-echo "starting xfce-terminal"
-xfce4-terminal --role=initial -x mosh elzar.nevira.net &
+echo "starting terminal"
+#xfce4-terminal --role=initial -x mosh elzar.nevira.net &
+urxvt -fn xft:Monospace:size=17,xft:Symbola -name toprightterm &
 echo "started"
 x-www-browser 2> /dev/null &
 
