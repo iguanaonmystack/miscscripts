@@ -3,7 +3,7 @@
 import sys
 from cgi import escape
 
-img_fmt_start = '<figure style="border: 2px solid black; width: 600px; margin: 0;"><a href="%s"><img src="%s" style="display: block;" width="600" /></a>'
+img_fmt_start = '<figure style="border: 2px solid black; width: 600px; margin: 0; background: url(\'%s\'); background-size: cover; background-position: center; overflow: hidden;"><a href="%s"><img src="%s" style="display: block; max-width: 600px; max-height: 400px; margin-left: auto; margin-right: auto; box-shadow: 0 0 150px 150px rgba(0,0,0,1);" /></a>'
 caption_fmt = '<figcaption style="text-align: center; border-top: 2px solid black; background-color: #ddd; padding: 0.5ex;">%s</figcaption>'
 img_fmt_end = '</figure>'
 thumb_fmt = '<a href="%s"><img src="%s" style="border: 2px solid black; float: left; margin: 0 1em 1em 0;" /></a>'
@@ -21,14 +21,14 @@ for line in sys.stdin:
         if '.small.' in imgurl:
             imgurl = imgurl.replace('.small.', '.lj.')
         elif '.thumb.' in imgurl:
-            imgurl = imgurl.replace('.thumb.', '.lj.')
             linkurl = imgurl.replace('.thumb.', '.small.')
+            imgurl = imgurl.replace('.thumb.', '.lj.')
         elif '.lj.' in imgurl:
             linkurl = imgurl.replace('.lj.', '.small.')
         else:
             linkurl = imgurl[:-4] + '.small' + imgurl[-4:]
             imgurl = imgurl[:-4] + '.lj' + imgurl[-4:]
-        line = img_fmt_start % (linkurl, imgurl)
+        line = img_fmt_start % (imgurl, imgurl, imgurl)
         if caption:
             line += caption_fmt % (caption,)
         line += img_fmt_end
