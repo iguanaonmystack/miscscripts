@@ -1,36 +1,106 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
-from random import shuffle
+from secrets import choice
+import io
 import os
 import sys
+import argparse
 import subprocess
 
-print "\n^D to skip episode, ^C to quit\n"
 
-player = 'mplayer'
-if len(sys.argv) > 1:
-    player = sys.argv[1]
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('player', nargs='?', default='mplayer', action='store',
+                    help='application to play the files')
+parser.add_argument('files', metavar='file', nargs='*',
+                    help='files to play')
+parser.add_argument('--no-curate', dest='nocurate', action='store_true',
+                    default=False,
+                    help='don\'t prompt for delete after playing')
+parser.add_argument('--no-shuffle', dest='noshuffle', action='store_true',
+                    default=False,
+                    help='don\'t shuffle files before playing')
+parser.add_argument('-i', '--immediate', dest='immediate', action='store_true',
+                    default=False,
+                    help='play file immediately rather than prompting')
+args = parser.parse_args()
+print("^D to skip episode, ^C to quit\n")
+
+def isvideo(episode):
+    ext = episode[-4:]
+    if ext == ".avi" or ext == ".mov" or ext == ".mpg" or episode[-3:] == ".rm" or episode[-5:] == ".mpeg" or ext == ".mp4" or ext == ".wmv" or ext == ".asf" or ext == ".flv" or episode[-5:] == '.webm' or ext == '.gif':
+        return True
+    return False
+
+
+def _raw_input(prompt, outstream, input_):
+    prompt = str(prompt)
+    if prompt:
+        try:
+            outstream.write(prompt)
+        except UnicodeEncodeError:
+            # Use replace error handler to get as much as possible printed.
+            prompt = prompt.encode(outstream.encoding, 'replace')
+            prompt = prompt.decode(outstream.encoding)
+            outstream.write(prompt)
+        outstream.flush()
+    line = input_.readline()
+    if not line:
+        raise EOFError
+    if line[-1] == '\n':
+        line = line[:-1]
+    return line
+
+
+episodes = args.files
+input_ = sys.stdin
+if '-' in episodes:
+    episodes.remove('-')
+    episodes.extend([ep.rstrip('\n') for ep in sys.stdin.readlines()])
+    input_ = io.TextIOWrapper(
+        io.FileIO(os.open('/dev/tty', os.O_RDWR|os.O_NOCTTY), 'w+'))
+
+
+walked = False
+if not episodes:
+    walked = True
+    for dir, subdirs, files in os.walk('.'):
+        episodes.extend([os.path.join(dir, filename)
+                         for filename in files
+                         if isvideo(filename)])
+if os.environ.get('NOSHUFFLE') or args.noshuffle:
+    if walked:
+        episodes.sort(reverse=True)
+else:
+    new = []
+    while episodes:
+        e = choice(episodes)
+        new.append(e)
+        episodes.remove(e)
+    episodes = new
 
 try:
-    episodes = []
-    for dir, subdirs, files in os.walk('.'):
-        episodes.extend([os.path.join(dir, filename) for filename in files])
-    shuffle(episodes)
     while True:
         episode = episodes.pop()
-        ext = episode[-4:]
-        if ext == ".avi" or ext == ".mov" or ext == ".mpg" or episode[-3:] == ".rm" or episode[-5:] == ".mpeg" or ext == ".mp4" or ext == ".wmv" or ext == ".asf" or ext == ".flv" or episode[-5:] == '.webm' or ext == '.gif':
-            try:
-                ans = raw_input(episode + "\n")
-                subprocess.call("%s \""%player + episode + "\"", shell=True)
-            except EOFError:
-                continue
-            delete = raw_input('Delete? (y/N/Replay) ')
-            if delete:
-                if delete in 'Yy':
-                    os.unlink(episode)
-                if delete in 'Rr':
-                    episodes.append(episode)
+        try:
+            if not args.immediate:
+                ans = _raw_input(episode + "\n", sys.stdout, input_)
+            process = "%s \"" % args.player + episode + "\""
+            print(process)
+            subprocess.call(process, shell=True)
+        except EOFError:
+            continue
+        if args.nocurate:
+            continue
+        try:
+            delete = _raw_input('Delete? (y/N/[r]eplay) ', sys.stdout, input_)
+        except EOFError:
+            print()
+            continue
+        if delete:
+            if delete in 'Yy':
+                os.unlink(episode)
+            if delete in 'Rr':
+                episodes.append(episode)
 except KeyboardInterrupt:
     sys.exit(0)
 
