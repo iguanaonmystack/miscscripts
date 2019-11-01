@@ -1,0 +1,106 @@
+#!/usr/bin/python3
+
+import os
+import sys
+import shlex
+import textwrap
+import argparse
+import subprocess
+
+if not hasattr(shlex, 'join'):
+    # Added in Python 3.8
+    shlex.join = lambda command: ' '.join(shlex.quote(arg) for arg in command)
+
+
+class ReminderSyntaxError(ValueError):
+    pass
+
+
+class Reminder:
+    def __init__(self, *, xmessage: str, display=':0.0'):
+        self.xmessage = xmessage
+        self.display = display
+
+    def run_at_command(self, when: list, message: list):
+        at_cmd = ['at'] + when
+        # TODO detect current display if there is one
+        shell_message = shlex.quote(' '.join(message))
+        pipe_text = 'DISPLAY={} {} {}'.format(
+            shlex.quote(self.display), self.xmessage, shell_message)
+        print('Piping message {} to at command {}'.format(
+            pipe_text, shlex.join(at_cmd)))
+        proc = subprocess.Popen(at_cmd, stdin=subprocess.PIPE)
+        out, err = proc.communicate(pipe_text.encode('utf-8'))
+
+    def parse_at(self, args):
+        message = ['reminder']
+        try:
+            to_ = args.index('to')
+        except ValueError:
+            to_ = None
+        else:
+            message = args[to_ + 1:]
+        when = args[:to_]
+        if len(when) < 1:
+            raise ReminderSyntaxError('No time provided')
+        if len(message) < 1:
+            raise ReminderSyntaxError('No message provided')
+        self.run_at_command(when, message)
+
+    def parse_in(self, args):
+        message = ['reminder']
+        try:
+            to_ = args.index('to')
+        except ValueError:
+            to_ = None
+        else:
+            message = args[to_ + 1:]
+        when = ['now', '+'] + args[:to_]
+        if len(when) < 1:
+            raise ReminderSyntaxError('No time provided')
+        if len(message) < 1:
+            raise ReminderSyntaxError('No message provided')
+        self.run_at_command(when, message)
+
+def main():
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=textwrap.dedent("""
+            Interface for `at` using xmessage.
+
+            Set a reminder at a certain time using
+            > at [time] to [message]
+            > in [relative time] to [message]
+            """)
+    )
+    parser.add_argument('--xmessage', metavar='xmessage', nargs='?',
+                        default='xmessage',
+                        help='Alternative command to xmessage')
+    parser.add_argument('spec', metavar='reminder', nargs=argparse.REMAINDER,
+                        help='DSL describing the reminder to set')
+    args = parser.parse_args()
+
+    if len(args.spec) < 1:
+        parser.print_help(sys.stderr)
+        return 2
+
+    reminder = Reminder(xmessage=args.xmessage,
+                        display=os.environ.get('DISPLAY', ':0.0'))
+    try:
+        reminder_parsers = {
+            'at': reminder.parse_at,
+            'in': reminder.parse_in}
+        reminder_parser = reminder_parsers.get(args.spec[0], None)
+        if reminder_parser is None:
+            raise ReminderSyntaxError(
+                'Command must start with ' + '/'.join(reminder_parsers.keys()))
+        reminder_parser(args.spec[1:])
+    except ReminderSyntaxError as e:
+        print('E: ' + str(e), file=sys.stderr)
+        print(file=sys.stderr)
+        parser.print_help(sys.stderr)
+        return 2
+
+
+if __name__ == '__main__':
+    sys.exit(main())
