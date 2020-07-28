@@ -1,16 +1,19 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """Script to format my Dreamwidth/Livejournal entries consistently"""
 import sys
-from cgi import escape
+from html import escape
 
 img_fmt_start = '<figure style="border: 2px solid black; width: 600px; margin: 0; background: url(\'%s\'); background-size: cover; background-position: center; overflow: hidden;"><a href="%s"><img src="%s" style="display: block; max-width: 600px; max-height: 400px; margin-left: auto; margin-right: auto; box-shadow: 0 0 150px 150px rgba(0,0,0,1);" /></a>'
 caption_fmt = '<figcaption style="text-align: center; border-top: 2px solid black; background-color: #ddd; padding: 0.5ex;">%s</figcaption>'
 img_fmt_end = '</figure>'
-thumb_fmt = '<a href="%s"><img src="%s" style="border: 2px solid black; float: left; margin: 0 1em 1em 0;" /></a>'
+thumb_fmt = '<a href="%s"><img src="%s" style="border: 2px solid black; float: left; margin: 0 1em 1em 0;" width="200" height="300" /></a>'
 first_header = True
+current_thumbnail = False
+after_thumbnail = False
 
 for line in sys.stdin:
     line = line.strip()
+    end = '\n'
     if line.startswith('http'):
         if ' ' in line:
             imgurl, caption = line.split(' ', 1)
@@ -54,6 +57,19 @@ for line in sys.stdin:
             linkurl = line[:-4] + '.small' + line[-4:]
             imgurl = line[:-4] + '.thumb' + line[-4:]
         line = thumb_fmt % (linkurl, imgurl)
+        end = ''
+        current_thumbnail = True
 
-    print line
-print '</div></cut>'
+    if after_thumbnail:
+        if not line.strip():
+            line = ''
+            end = ''
+        else:
+            after_thumbnail = False
+
+    print(line, end=end)
+
+    if current_thumbnail:
+        after_thumbnail = True
+        current_thumbnail = False
+print('</div></cut>')
