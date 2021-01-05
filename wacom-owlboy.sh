@@ -10,12 +10,17 @@ xsetwacom --set "$DEVICEID" ResetArea
 INITIAL_AREA=$(xsetwacom --get "$DEVICEID" Area)
 NEW_AREA=$(python3 -c '
 import sys
-coords = [str(int(v) // 2) for v in sys.argv[1:]]
-sys.stdout.write(" ".join(coords))
+coords = [int(v) for v in sys.argv[1:]]
+height = coords[3]
+coords[1] = height // 4
+coords[3] = height // 4 + (height // 2)
+coords[2] = coords[2] // 2
+sys.stdout.write(" ".join((str(c) for c in coords)))
 ' $INITIAL_AREA)
 
 # Set usable area of tablet to just half X and half Y (ie, top left corner)
 xsetwacom --set "$DEVICEID" Area $NEW_AREA
+xsetwacom --set "$ERASERID" Area $NEW_AREA
 
 # Set wacom to map only to primary display
 xsetwacom --set "$DEVICEID" MapToOutput "$DISPLAYID"

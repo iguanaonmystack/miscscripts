@@ -27,7 +27,7 @@ print("^D to skip episode, ^C to quit\n")
 
 def isvideo(episode):
     ext = episode[-4:]
-    if ext == ".avi" or ext == ".mov" or ext == ".mpg" or episode[-3:] == ".rm" or episode[-5:] == ".mpeg" or ext == ".mp4" or ext == ".wmv" or ext == ".asf" or ext == ".flv" or episode[-5:] == '.webm' or ext == '.gif':
+    if ext == ".avi" or ext == ".mov" or ext == ".mpg" or episode[-3:] == ".rm" or episode[-5:] == ".mpeg" or ext == ".mp4" or ext == ".wmv" or ext == ".asf" or ext == ".flv" or episode[-5:] == '.webm':
         return True
     return False
 

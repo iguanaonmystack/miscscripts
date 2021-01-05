@@ -38,10 +38,11 @@ sshfs elzar.nevira.net:notes ~/notes &
 sshfs elzar.nevira.net:misc ~/misc &
 mount /mnt/cloudbox/storage/ &
 mount /mnt/cloudbox/Shared/ &
+DISPLAY=:0 qjoypad &
 dropbox start &
 
 # UIs:
-digiguide &
+#digiguide &
 echo "starting terminal"
 #xfce4-terminal --role=initial -x mosh elzar.nevira.net &
 urxvt -fn xft:Monospace:size=17,xft:Symbola -name toprightterm &

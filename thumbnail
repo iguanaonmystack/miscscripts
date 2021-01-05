@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import glob
 import os
@@ -26,5 +26,5 @@ for fn in filenames:
         subprocess.call(['convert', fn, '-scale', '1024', fn2])
     fn2 = base + os.extsep + 'thumb' + extn
     if not os.path.exists(fn2):
-        subprocess.call(['convert', fn, '-scale', '200', fn2])
+        subprocess.call(['convert', fn, '-scale', '400', fn2])
 

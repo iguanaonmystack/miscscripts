@@ -51,13 +51,16 @@ def mergesort(list):
         return left + [middle] + right
 
 def usage():
-    return "Usage: %s <item1> <item2> <item3> ..." % sys.argv[0]
+    return "Usage: %s <item1> <item2> <item3> ...\nUse '-' to read from stdin" % sys.argv[0]
+
 
 if __name__ == "__main__":
     
     list = sys.argv[1:]
     if not list or list[0] in ('-h', '--help'):
         sys.exit(usage())
+    if list[0] == '-':
+        list = [line.strip() for line in sys.stdin.readlines()]
 
     print('Type 1 if you prefer the first film given,')
     print('or 2 if you prefer the second.')
