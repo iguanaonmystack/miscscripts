@@ -2,10 +2,18 @@
 import sys
 import glob
 import os
+import argparse
 import subprocess
 
-filenames = sys.argv[1:]
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('filenames', metavar='file', nargs='*',
+                    help='files to convert')
+parser.add_argument('-w', '--width', dest='width', type=int,
+                    default=1024,
+                    help='width of the generated *.small.* images.')
+args = parser.parse_args()
 
+filenames = args.filenames
 if not filenames:
     filenames += glob.glob('*.JPG')
     filenames += glob.glob('*.jpg')
@@ -23,7 +31,7 @@ for fn in filenames:
     base, extn = os.path.splitext(fn)
     fn2 = base + os.extsep + 'small' + extn
     if not os.path.exists(fn2):
-        subprocess.call(['convert', fn, '-scale', '1024', fn2])
+        subprocess.call(['convert', fn, '-scale', str(args.width), fn2])
     fn2 = base + os.extsep + 'thumb' + extn
     if not os.path.exists(fn2):
         subprocess.call(['convert', fn, '-scale', '400', fn2])
