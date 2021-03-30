@@ -71,7 +71,7 @@ if [ $# -gt 1 ]; then
                 echo "<div class='item'><a href='$sm' data-lightbox='best'><img src='$th' title='$file' /></a><p><a href='$file'>Full size</a></p></div>"
             fi
         ;;
-        avi )
+        avi | mov | mp4 )
             webm="$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.webm/')"
             mp4="$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.mp4/')"
             th="$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.jpg/')"
@@ -102,7 +102,7 @@ find . -not -name \*.little.\* -not -name \*.thumb.\* -not -name \*.small.\* -ty
                 echo "<div class='item'><a href='$sm' class='all' data-lightbox='all'><img src='$th' title='$file' /></a><p><a href='$file'>Full size</a></p></div>"
             fi
         ;;
-        avi | mov )
+        avi | mov | mp4 )
             webm=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.webm/')
             mp4=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.mp4/')
             th=$(echo "$file" | sed 's/^\(.*\)\(....\)$/\1.little.jpg/');

@@ -13,6 +13,8 @@ if not filenames:
     filenames += glob.glob('*.mpg')
     filenames += glob.glob('*.MOV')
     filenames += glob.glob('*.mov')
+    filenames += glob.glob('*.MP4')
+    filenames += glob.glob('*.mp4')
     for arg in filenames[:]:
         if '.little.' in arg:
             filenames.remove(arg)
