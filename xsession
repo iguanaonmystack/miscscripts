@@ -1,9 +1,14 @@
 #!/bin/bash
 
+echo "starting xsession..."
 export PATH=$HOME/bin:$PATH
 
+xterm &
+
 # xfsettingsd ensures that apps are updated when changing xfconf settings:
-xfsettingsd --replace
+xfsettingsd --replace & sleep 3
+
+echo "Started xfsettingsd"
 
 # Docked or undocked specialisation, mostly regarding DPI settings:
 CONNECTED=$(xrandr | grep ' connected' -c)
